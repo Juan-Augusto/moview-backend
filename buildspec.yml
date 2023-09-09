@@ -1,0 +1,32 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - n 16.16.0
+  pre_build:
+    commands:
+      - echo Stack started...
+      - echo "FINOPS_STAGE=${FINOPS_STAGE}" >> .env.production
+      - echo "STAGE=${STAGE}" >> .env.production
+      - echo "LOCAL_PORT=${LOCAL_PORT}" >> .env.production
+      - echo "AWS_API_GATEWAY_COGNITO_NAME=${AWS_API_GATEWAY_COGNITO_NAME}" >> .env.production
+      - echo "LAYER_BUCKET=${LAYER_BUCKET}" >> .env.production
+      - echo "AWS_API_GATEWAY_REST_ID=${AWS_API_GATEWAY_REST_ID}" >> .env.production
+      - echo "AWS_API_GATEWAY_REST_ROOT_RESOURCE_ID=${AWS_API_GATEWAY_REST_ROOT_RESOURCE_ID}" >> .env.production
+      - echo "AWS_REGION_LOCATION=${AWS_REGION_LOCATION}" >> .env.production
+      - echo "API_NAME=${API_NAME}" >> .env.production
+      - cat .env.production
+  build:
+    on-failure: ABORT
+    commands:
+      - echo Installing source NPM dependencies...
+      - npm install
+    finally:
+      - echo Success on installing npm dependencies...
+  post_build:
+    on-failure: ABORT
+    commands:
+      - echo Deploying application on API Gateway...
+      - npm run deploy
+    finally:
+      - echo Success on deploy application on API Gateway...

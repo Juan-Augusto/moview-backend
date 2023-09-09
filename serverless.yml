@@ -1,0 +1,70 @@
+service: "Moview-API"
+useDotenv: false
+variablesResolutionMode: 20210326
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-layers
+  - serverless-plugin-split-stacks
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: ${self:custom.dotenv.STAGE}
+  region: ${self:custom.dotenv.AWS_REGION_LOCATION}
+  timeout: 30 # Default Lambda timeout
+  memorySize: 1024 # Default Lambda Memory Size
+  versionFunctions: false # No functions versioning
+  iamRoleStatements: # Permissions for all of your functions can be set here
+    - Effect: Allow
+      Action: # Gives permission to Lambda execution
+        - lambda:*
+        - dynamodb:*
+        - cognito-idp:*
+        - secretsmanager:*
+        - s3:*
+        - textract:*
+        - sns:*
+        - sts:*
+        - states:*
+      Resource: "*"
+  apiGateway:
+    restApiId: ${self:custom.dotenv.AWS_API_GATEWAY_REST_ID}
+    restApiRootResourceId: ${self:custom.dotenv.AWS_API_GATEWAY_REST_ROOT_RESOURCE_ID}
+
+  environment: ${file(env.${opt:stage,'dev'}.js)}
+
+package:
+  individually: true
+  excludeDevDependencies: true
+  patterns:
+    - "!.git/**"
+    - "!.vscode/**"
+    - "!.test/**"
+    - "!.env.development"
+    - "!.env.production"
+
+custom:
+  dotenv: ${file(env.${opt:stage,'dev'}.js)}
+
+  webpack:
+    packager: "npm"
+
+  splitStacks:
+    perFunction: true
+    perType: true
+
+  serverless-layers:
+    dependenciesPath: ./package.json
+    layersDeploymentBucket: ${self:custom.dotenv.LAYER_BUCKET}
+
+  serverless-offline:
+    httpPort: ${self:custom.dotenv.LOCAL_PORT}
+    babelOptions:
+      presets: ["env"]
+
+functions: ${file(serverless-dynamic.js)}
+# Only first deploy
+# resources:
+#   - ${file(resources/ApiGatewayAuthorizer.yml)}

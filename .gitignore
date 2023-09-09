@@ -1,0 +1,13 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+
+.webpack
+jwt.example.json
+package-lock.json
+.env.production
+.env.development
+yarn.lock

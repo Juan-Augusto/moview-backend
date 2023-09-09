@@ -1,0 +1,47 @@
+get-lists-from-user:
+  handler: src/functions/dynamo/getListByUser.handler
+  name: get-lists-from-user
+  description: Get all lists from a user
+  memorySize: 128
+  timeout: 30
+  events:
+    - http:
+        path: /lists
+        method: get
+        cors: true
+
+create-first-list-for-user:
+  handler: src/functions/dynamo/createList.handler
+  name: create-first-list-for-user
+  description: Create first list for a user
+  memorySize: 128
+  timeout: 30
+  events:
+    - http:
+        path: /first-list
+        method: post
+        cors: true
+
+delete-all-lists-from-user:
+  handler: src/functions/dynamo/delete.handler
+  name: delete-all-lists-from-user
+  description: Delete all lists from a user
+  memorySize: 128
+  timeout: 30
+  events:
+    - http:
+        path: /lists
+        method: delete
+        cors: true
+
+update-list:
+  handler: src/functions/dynamo/updateLists.handler
+  name: update-list
+  description: Update a list
+  memorySize: 128
+  timeout: 30
+  events:
+    - http:
+        path: /lists
+        method: put
+        cors: true

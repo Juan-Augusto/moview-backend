@@ -1,0 +1,10 @@
+Resources:
+  ApiGatewayAuthorizer:
+    Type: AWS::ApiGateway::Authorizer
+    Properties:
+      Name: ${self:custom.dotenv.AWS_API_GATEWAY_COGNITO_NAME}
+      IdentitySource: method.request.header.Authorization
+      RestApiId: ${self:custom.dotenv.AWS_API_GATEWAY_REST_ID}
+      Type: COGNITO_USER_POOLS
+      ProviderARNs:
+        - arn:aws:cognito-idp:us-east-1:${self:custom.dotenv.ACCOUNT_ID}:userpool/${self:custom.dotenv.USER_POOL_ID}

@@ -1,0 +1,11 @@
+get-user-from-cognito:
+  handler: src/functions/cognito/generateCognitoCode.handler
+  name: get-user-data-from-cognito
+  description: Get all lists from a user
+  memorySize: 128
+  timeout: 30
+  events:
+    - http:
+        path: /code
+        method: post
+        cors: true
